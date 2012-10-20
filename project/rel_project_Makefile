@@ -1,0 +1,92 @@
+DEPS=$(CURDIR)/deps
+
+# The release branch should have a file named USE_REBAR_LOCKED
+use_locked_config = $(wildcard USE_REBAR_LOCKED)
+ifeq ($(use_locked_config),USE_REBAR_LOCKED)
+  rebar_config = rebar.config.lock
+else
+  rebar_config = rebar.config
+endif
+REBAR = rebar -C $(rebar_config)
+
+all: compile
+
+compile: $(DEPS)
+	@$(REBAR) compile
+
+compile_skip:
+	@$(REBAR) compile skip_deps=true
+
+# For a release-only project, this won't make much sense, but could be
+# useful for release projects that have their own code
+clean:
+	@$(REBAR) clean skip_deps=true
+
+allclean:
+	@$(REBAR) clean
+
+update: compile
+	@cd rel/{{name}};bin/{{name}} restart
+
+distclean: relclean
+	@rm -rf deps
+	@$(REBAR) clean
+
+tags: TAGS
+
+TAGS:
+	find deps -name "*.[he]rl" -print | etags -
+
+# Only do munge_apps if we have files in src/
+all_src_files = $(wildcard src/*)
+ifeq ($(strip $(all_src_files)),)
+munge_apps:
+	@true
+else
+munge_apps:
+	@mkdir -p rel/apps/{{name}}
+	@ln -sf `pwd`/ebin rel/apps/{{name}}
+	@ln -sf `pwd`/priv rel/apps/{{name}}
+	@cp rebar.config rel
+	@echo '{deps_dir, ["../deps"]}.' >> rel/rebar.config
+endif
+
+generate: munge_apps
+	@/bin/echo 'building OTP release package for {{name}}'
+	@/bin/echo "using rebar as: $(REBAR)"
+	@cd rel;$(REBAR) generate
+	@rm -rf rel/apps rel/rebar.config
+
+rel: rel/{{name}}
+
+devrel: rel
+	@/bin/echo -n Symlinking deps and apps into release
+	@$(foreach dep,$(wildcard deps/*), /bin/echo -n .;rm -rf rel/{{name}}/lib/$(shell basename $(dep))-* \
+	   && ln -sf $(abspath $(dep)) rel/{{name}}/lib;)
+	@rm -rf rel/{{name}}/lib/{{name}}-*;mkdir -p rel/{{name}}/lib/{{name}}
+	@ln -sf `pwd`/ebin rel/{{name}}/lib/{{name}}
+	@ln -sf `pwd`/priv rel/{{name}}/lib/{{name}}
+	@/bin/echo done.
+	@/bin/echo  Run \'make update\' to pick up changes in a running VM.
+
+rel/{{name}}: compile generate
+
+relclean:
+	@rm -rf rel/{{name}}
+
+$(DEPS):
+	@echo "Fetching deps as: $(REBAR)"
+	@$(REBAR) get-deps
+
+prepare_release: remove_lock distclean rel lock_deps set_lock
+
+remove_lock:
+	@rm -f USE_REBAR_LOCKED
+
+set_lock:
+	@touch USE_REBAR_LOCKED
+
+lock_deps:
+	@rebar lock-deps skip_deps=true
+
+.PHONY: distclean remove_lock set_lock prepare_release update_locked_config update clean compile compile_skip allclean tags relclean devrel rel relclean generate munge_apps prepare_release set_lock remove_lock lock_deps

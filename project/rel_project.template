@@ -1,0 +1,26 @@
+{variables, [
+  {name, "myproject"}, 
+  {copyright_year, "2012"},
+  {author_name, "First Last"},
+  {author_email,"you@opscode.com"},
+  {description, "Fill in description of project here."}
+]}.
+
+{dir, "rel"}.
+{file, "project_gitignore",              ".gitignore"}.
+{template, "project_README.md",          "README.md"}.
+{template, "rel_project_Makefile",       "Makefile"}.
+{template, "rel_project_rebar.config",   "rebar.config"}.
+
+{template, "rel_project_vm.args",        "rel/files/vm.args"}.
+{file, "rel_project_nodetool",           "rel/files/nodetool"}.
+
+{file, "rel_project_erl",                "rel/files/erl"}.
+{chmod, 8#744, "rel/files/erl"}.
+
+{file, "rel_project_appbin",             "rel/files/{{name}}"}.
+{chmod, 8#744, "rel/files/{{name}}"}.
+
+{file, "rel_project_sys.config",         "rel/files/sys.config"}.
+{template, "rel_project_reltool.config", "rel/reltool.config"}.
+
