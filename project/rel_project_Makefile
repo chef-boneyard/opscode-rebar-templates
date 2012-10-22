@@ -78,15 +78,16 @@ $(DEPS):
 	@echo "Fetching deps as: $(REBAR)"
 	@$(REBAR) get-deps
 
-prepare_release: remove_lock distclean rel lock_deps set_lock
-
-remove_lock:
-	@rm -f USE_REBAR_LOCKED
-
-set_lock:
+prepare_release: distclean unlocked_deps rel lock_deps
+	@echo 'release prepared, bumping version'
 	@touch USE_REBAR_LOCKED
+	@$(REBAR) bump-rel-version
+
+unlocked_deps:
+	@echo 'Fetching deps as: rebar -C rebar.config'
+	@rebar -C rebar.config get-deps
 
 lock_deps:
 	@rebar lock-deps skip_deps=true
 
-.PHONY: distclean remove_lock set_lock prepare_release update_locked_config update clean compile compile_skip allclean tags relclean devrel rel relclean generate munge_apps prepare_release set_lock remove_lock lock_deps
+.PHONY: distclean prepare_release lock_deps unlocked_deps update clean compile compile_skip allclean tags relclean devrel rel relclean generate munge_apps

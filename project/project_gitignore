@@ -1,4 +1,6 @@
 ebin/*
 *.beam
 deps/*
+rel/{{name}}
+
 

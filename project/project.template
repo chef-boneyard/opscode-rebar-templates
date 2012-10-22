@@ -9,11 +9,11 @@
 {dir, "include"}.
 {dir, "test"}.
 {dir, "priv"}.
-{file, "project_gitignore", ".gitignore"}.
-{template, "project_README.md", "README.md"}.
-{template, "project_Makefile", "Makefile"}.
+{template, "project_gitignore",    ".gitignore"}.
+{template, "project_README.md",    "README.md"}.
+{template, "project_Makefile",     "Makefile"}.
 {template, "project_rebar.config", "rebar.config"}.
-{template, "project_eunit.erl", "test/{{name}}_tests.erl"}.
-{template, "project_mod.erl", "src/{{name}}.erl"}.
-{template, "project_app.src", "src/{{name}}.app.src"}.
+{template, "project_eunit.erl",    "test/{{name}}_tests.erl"}.
+{template, "project_mod.erl",      "src/{{name}}.erl"}.
+{template, "project_app.src",      "src/{{name}}.app.src"}.
 

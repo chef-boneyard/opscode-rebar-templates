@@ -7,7 +7,7 @@
 ]}.
 
 {dir, "rel"}.
-{file, "project_gitignore",              ".gitignore"}.
+{template, "project_gitignore",          ".gitignore"}.
 {template, "project_README.md",          "README.md"}.
 {template, "rel_project_Makefile",       "Makefile"}.
 {template, "rel_project_rebar.config",   "rebar.config"}.
