@@ -20,4 +20,17 @@ a top-level OTP Release project). Use it like this:
       author_name="First Last" \
       author_email="you@opscode.com"
 
-    
+## Generate a new Erlang top-level OTP release project ##
+
+The `rel_project` template creates a skeleton of an Erlang OTP
+embedded release application. By default, this assumes no local source
+code. It should do the right thing, however, if add a `src`
+directory. This setup does not work with the `apps/APP` structure.
+
+    mkdir my_rel
+    cd my_rel
+    rebar create template=project name=my_rel \
+      description="describe it, yo" \
+      author_name="First Last" \
+      author_email="you@opscode.com"
+    make prepare_release
