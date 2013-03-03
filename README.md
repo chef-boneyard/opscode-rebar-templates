@@ -34,3 +34,7 @@ directory. This setup does not work with the `apps/APP` structure.
       author_name="First Last" \
       author_email="you@opscode.com"
     make prepare_release
+
+## License ##
+
+Apache 2. See [LICENSE](./LICENSE).
